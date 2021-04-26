@@ -30,9 +30,14 @@
 *******************************************************************************/
 
 #include "`$INSTANCE_NAME`.h"
-#include "`$I2C_Master`.h"
+#include "`$INSTANCE_NAME`_I2C.h"
 
-#define "`INSTANCE_NAME`_WHO_AM_I_VALUE 0
+/**
+ *  \brief          WHO AM I register value.
+ */
+#define `$INSTANCE_NAME`_WHO_AM_I_VALUE         0x33
+
+#define `$INSTANCE_NAME`_WHO_AM_I_REGISTER      0x0F
 
 /***********************************
 *          Generic Functions       *
@@ -50,25 +55,57 @@
 uint8_t `$INSTANCE_NAME`_Start(void)
 {
     /* Start I2C Master Component */
-    `$I2C_Master`_Start();
+    `$INSTANCE_NAME`_I2C_Start();
+    
+    uint8_t who_am_i = 0;
+    if (`$INSTANCE_NAME`_ReadWhoAmI(&who_am_i) == `$INSTANCE_NAME`_OK)
+    {
+        if (who_am_i != `$INSTANCE_NAME`_WHO_AM_I_VALUE)
+        {
+            return `$INSTANCE_NAME`_DEV_NOT_FOUND;
+        }
+    }
+    else
+    {
+        return `$INSTANCE_NAME`_DEV_NOT_FOUND;
+    }
+    
+    /* Check if we need to disconnect pull-up */
+    if (`$I2C_Pullup`)
+    {
+        `$INSTANCE_NAME`_DisconnectPullUp();
+    }
+    else
+    {
+        `$INSTANCE_NAME`_ConnectPullUp();
+    }
     
 }
 
 uint8_t `$INSTANCE_NAME`_Stop(void)
 {
-        
+    `$INSTANCE_NAME`_I2C_Start();
 }
 
 /***********************************
 *         Register Functions       *
 ************************************/
-uint8_t `$INSTANCE_NAME`_ReadWhoAmI(void)
+uint8_t `$INSTANCE_NAME`_ReadWhoAmI(uint8_t* value)
 {
-        
+    uint8_t temp_value = 0;
+    uint8_t error = `$INSTANCE_NAME`_I2C_ReadRegister(`$I2C_Address`, `$INSTANCE_NAME`_WHO_AM_I_REGISTER, &temp_value);
+    if (error == `$INSTANCE_NAME`_I2C_OK)
+    {
+        *value = temp_value;
+        return `$INSTANCE_NAME`_OK;
+    }
+
+    return `$INSTANCE_NAME`_DEV_NOT_FOUND;
 }
 
 uint8_t `$INSTANCE_NAME`_DisconnectPullUp(void)
 {
+    
 }
 
 uint8_t `$INSTANCE_NAME`_ConnectPullUp(void)

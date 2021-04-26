@@ -43,22 +43,41 @@
     *           API Constants          *
     ************************************/
     
+    /**
+     *  \brief          No error occurred during I2C transaction.
+     */
+    #define `$INSTANCE_NAME`_I2C_OK                 0
+    
+    /**
+     *  \brief          I2C device was not found on bus.
+     */
+    #define `$INSTANCE_NAME`_I2C_DEV_NOT_FOUND      1
+    
+    
     /***********************************
     *       Generic Functions          *
     ************************************/
-    uint8_t `$INSTANCE_NAME`_I2C_Start(void);
-    uint8_t `$INSTANCE_NAME`_I2C_Stop(void);
+    void `$INSTANCE_NAME`_I2C_Start(void);
+    void `$INSTANCE_NAME`_I2C_Stop(void);
     
     /************************************
     *       I2C Read Functions          *
     *************************************/
-    uint8_t `$INSTANCE_NAME`_ReadRegister(void);
-    uint8_t `$INSTANCE_NAME`_ReadMultiRegister(void);
+    uint8_t `$INSTANCE_NAME`_I2C_ReadRegister(uint8_t device_address, 
+                                            uint8_t register_address,
+                                            uint8_t* data);
+    
+    uint8_t `$INSTANCE_NAME`_I2C_ReadMultiRegister(uint8_t device_address,
+                                                uint8_t register_address,
+                                                uint8_t register_count,
+                                                uint8_t* data);
     
     /************************************
     *       I2C Write Functions         *
     *************************************/
-    uint8_t `$INSTANCE_NAME`_WriteRegister(void);
+    uint8_t `$INSTANCE_NAME`_I2C_WriteRegister(uint8_t device_address,
+                                        uint8_t register_address,
+                                        uint8_t data);
     
     #ifdef __cpluscplus
         }

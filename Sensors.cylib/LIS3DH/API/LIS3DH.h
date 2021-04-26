@@ -59,7 +59,7 @@
     /***********************************************
     *       Read/Write Register Functions          *
     ***********************************************/
-    uint8_t `$INSTANCE_NAME`_ReadWhoAmI(void);
+    uint8_t `$INSTANCE_NAME`_ReadWhoAmI(uint8_t* value);
     
     /***********************************************
     *       Configuration Functions          *
