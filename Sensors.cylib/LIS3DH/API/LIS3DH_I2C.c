@@ -29,8 +29,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
-#include "`$INSTANCE_NAME`_I2C.h
-#include "`$I2C_Master`.h
+#include "`$INSTANCE_NAME`_I2C.h"
+#include "`$I2C_Master`.h"
 
 /**
  *  \brief          Start the I2C master component.
@@ -164,7 +164,7 @@ uint8_t `$INSTANCE_NAME`_I2C_WriteRegister(uint8_t device_address,
                 // Send stop condition
                 `$I2C_Master`_MasterSendStop();
                 // Return with no error
-                return `$INSTANCE_NAME`_OK;
+                return `$INSTANCE_NAME`_I2C_OK;
             }
         }
     }
