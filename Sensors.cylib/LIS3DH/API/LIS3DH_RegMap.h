@@ -85,7 +85,7 @@
     /**
      *  \brief          Temperature configuration register address.
      */
-    #define `$INSTANCE_NAME`_TEMP_CFG_REG_REGISTER      0x1F
+    #define `$INSTANCE_NAME`_TEMP_CFG_REGISTER      0x1F
 
     /**
      *  \brief          Control register 1 register address.

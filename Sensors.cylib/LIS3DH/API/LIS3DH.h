@@ -79,6 +79,19 @@
     ***********************************************/
     uint8_t `$INSTANCE_NAME`_DisconnectPullUp(void);
     uint8_t `$INSTANCE_NAME`_ConnectPullUp(void);
+    uint8_t `$INSTANCE_NAME`_EnableADC(void);
+    uint8_t `$INSTANCE_NAME`_EnableTempSensor(void);
+    uint8_t `$INSTANCE_NAME`_DisableADC(void);
+    uint8_t `$INSTANCE_NAME`_DisableTempSensor(void);
+    uint8_t `$INSTANCE_NAME`_EnableLowPowerMode(void);
+    uint8_t `$INSTANCE_NAME`_DisableLowPowerMode(void);
+    uint8_t `$INSTANCE_NAME`_EnableXAxis(void);
+    uint8_t `$INSTANCE_NAME`_DisableXAxis(void);
+    uint8_t `$INSTANCE_NAME`_EnableYAxis(void);
+    uint8_t `$INSTANCE_NAME`_DisableYAxis(void);
+    uint8_t `$INSTANCE_NAME`_EnableZAxis(void);
+    uint8_t `$INSTANCE_NAME`_DisableZAxis(void);
+    uint8_t `$INSTANCE_NAME`_SetOutputDataRate(uint8_t odr);
     
     /***********************************************
     *           Acceleration Functions             *
@@ -105,6 +118,14 @@
     uint8_t `$INSTANCE_NAME`_ADC2HasNewData(uint8_t* new_data);
     uint8_t `$INSTANCE_NAME`_ADC3HasNewData(uint8_t* new_data);
     uint8_t `$INSTANCE_NAME`_ADCHasNewData(uint8_t* new_data);
+    
+    uint8_t `$INSTANCE_NAME`_ADC1ReadRaw(uint16_t* data);
+    uint8_t `$INSTANCE_NAME`_ADC1Read(int16_t* data);
+    uint8_t `$INSTANCE_NAME`_ADC2ReadRaw(uint16_t* data);
+    uint8_t `$INSTANCE_NAME`_ADC2Read(int16_t* data);
+    uint8_t `$INSTANCE_NAME`_ADC3ReadRaw(uint16_t* data);
+    uint8_t `$INSTANCE_NAME`_ADC3Read(int16_t* data);
+    
     
     #ifdef __cpluscplus
         }

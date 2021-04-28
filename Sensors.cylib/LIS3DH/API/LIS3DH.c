@@ -42,19 +42,50 @@
  */
 #define `$INSTANCE_NAME`_WHO_AM_I_VALUE             0x33
 
+/**
+ *  \brief Parameter used for X Axis in API Calls.
+ */
 #define `$INSTANCE_NAME`_X_AXIS_PARAM               0x01
+
+/**
+ *  \brief Parameter used for Y Axis in API Calls.
+ */
 #define `$INSTANCE_NAME`_Y_AXIS_PARAM               0x02
+
+/**
+ *  \brief Parameter used for Z Axis in API Calls.
+ */
 #define `$INSTANCE_NAME`_Z_AXIS_PARAM               0x03
+
+/**
+ *  \brief Parameter used for all Axis in API Calls.
+ */
 #define `$INSTANCE_NAME`_ALL_AXIS_PARAM             0x04
 
+/**
+ *  \brief Parameter used for ADC Channel 1 in API Calls.
+ */
 #define `$INSTANCE_NAME`_ADC_CH_1_PARAM             0x01
+
+/**
+ *  \brief Parameter used for ADC Channel 2 in API Calls.
+ */
 #define `$INSTANCE_NAME`_ADC_CH_2_PARAM             0x02
+
+/**
+ *  \brief Parameter used for ADC Channel 3 in API Calls.
+ */
 #define `$INSTANCE_NAME`_ADC_CH_3_PARAM             0x03
+
+/**
+ *  \brief Parameter used for ADC All Channels API Calls.
+ */
 #define `$INSTANCE_NAME`_ADC_ALL_CH_PARAM           0x04
+
 /***********************************
 *            Macros                *
 ************************************/
-#define `$INSTANCE_NAME`_ClearBit(value, bit_pos)   value = 
+
 
 
 /***********************************
@@ -71,6 +102,12 @@ static uint8_t `$INSTANCE_NAME`_ReadMulti(uint8_t register_address,
 static uint8_t `$INSTANCE_NAME`_Write(uint8_t register_address,
                                         uint8_t value);
 
+static uint8_t `$INSTANCE_NAME`_ClearBit(uint8_t register_address,
+                                        uint8_t bit_pos);
+
+static uint8_t `$INSTANCE_NAME`_SetBit(uint8_t register_address,
+                                        uint8_t bit_pos);
+
 static uint8_t `$INSTANCE_NAME`_CheckAxisOverrun(uint8_t axis, uint8_t* overrun);
 
 static uint8_t `$INSTANCE_NAME`_CheckAxisNewData(uint8_t axis, uint8_t* new_data);
@@ -79,6 +116,10 @@ static uint8_t `$INSTANCE_NAME`_CheckADCOverrun(uint8_t axis, uint8_t* overrun);
 
 static uint8_t `$INSTANCE_NAME`_CheckADCNewData(uint8_t axis, uint8_t* new_data);
 
+/***********************************
+*          State Variables         *
+************************************/
+static uint8_t `$INSTANCE_NAME`_low_power_enabled;
 /***********************************
 *          Generic Functions       *
 ************************************/
@@ -121,6 +162,69 @@ uint8_t `$INSTANCE_NAME`_Start(void)
         error =`$INSTANCE_NAME`_ConnectPullUp();
     }
     
+    /* Check if we need to enable X Axis */
+    if (`$en_x_axis`)
+    {
+        error = `$INSTANCE_NAME`_EnableXAxis();
+    }
+    else
+    {
+        error =`$INSTANCE_NAME`_DisableXAxis();
+    }
+    
+    /* Check if we need to enable Y Axis */
+    if (`$en_y_axis`)
+    {
+        error = `$INSTANCE_NAME`_EnableYAxis();
+    }
+    else
+    {
+        error =`$INSTANCE_NAME`_DisableYAxis();
+    }
+    
+    /* Check if we need to enable Z Axis */
+    if (`$en_z_axis`)
+    {
+        error = `$INSTANCE_NAME`_EnableZAxis();
+    }
+    else
+    {
+        error =`$INSTANCE_NAME`_DisableZAxis();
+    }
+    
+    /* Check if we need to enable ADC */
+    if (`$en_adc`)
+    {
+        error = `$INSTANCE_NAME`_EnableADC();
+    }
+    else
+    {
+        error =`$INSTANCE_NAME`_DisableADC();
+    }
+    
+    /* Check if we need to enable temperature sensor */
+    if (`$en_temperature_sensor`)
+    {
+        error = `$INSTANCE_NAME`_EnableTempSensor();
+    }
+    else
+    {
+        error =`$INSTANCE_NAME`_DisableTempSensor();
+    }
+    
+    /* Check if we need to enable low power mode */
+    if (`$en_low_power`)
+    {
+        error = `$INSTANCE_NAME`_EnableLowPowerMode();
+    }
+    else
+    {
+        error =`$INSTANCE_NAME`_DisableLowPowerMode();
+    }
+    
+    /* Set output data rate */
+    error = `$INSTANCE_NAME`_SetOutputDataRate(`$acc_odr`);
+    
     return error;
 }
 
@@ -150,27 +254,7 @@ uint8_t `$INSTANCE_NAME`_ReadWhoAmI(uint8_t* value)
  */
 uint8_t `$INSTANCE_NAME`_DisconnectPullUp(void)
 {
-    /* Read register value */
-    uint8_t temp_reg_value, error;
-    error = `$INSTANCE_NAME`_Read(`$INSTANCE_NAME`_CTRL_REG0_REGISTER, &temp_reg_value);
-    if ( error == `$INSTANCE_NAME`_OK)
-    {
-        /* Set bit 7 of the register */
-        temp_reg_value |= 1 << 7;
-        error = `$INSTANCE_NAME`_Write(`$INSTANCE_NAME`_CTRL_REG0_REGISTER, temp_reg_value);
-        
-        /* Return error based on check */
-        if ( error == `$INSTANCE_NAME`_OK)
-        {
-            return error;
-        }
-        else
-        {
-            return `$INSTANCE_NAME`_I2C_ERR;
-        }
-        
-    }
-    return `$INSTANCE_NAME`_DEV_NOT_FOUND;
+    return `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_CTRL_REG0_REGISTER, 7);
 }
 
 /**
@@ -181,29 +265,196 @@ uint8_t `$INSTANCE_NAME`_DisconnectPullUp(void)
  */
 uint8_t `$INSTANCE_NAME`_ConnectPullUp(void)
 {
-    /* Read register value */
-    uint8_t temp_reg_value, error;
-    error = `$INSTANCE_NAME`_Read(`$INSTANCE_NAME`_CTRL_REG0_REGISTER, &temp_reg_value);
+    return `$INSTANCE_NAME`_ClearBit(`$INSTANCE_NAME`_CTRL_REG0_REGISTER, 7);
+}
+
+/**
+ *  \brief          Enable ADC.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_EnableADC(void)
+{
+    /* Set bit 7 of TEMP_CFG_REG */
+    return `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_TEMP_CFG_REGISTER, 7);
+    
+}
+
+/**
+ *  \brief          Enable temperature sensor.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_EnableTempSensor(void)
+{
+    /* Set bit 6 of TEMP_CFG_REG */
+    return `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_TEMP_CFG_REGISTER, 6);
+}
+
+/**
+ *  \brief          Disable ADC.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_DisableADC(void)
+{
+    /* Set bit 7 of TEMP_CFG_REG */
+    return `$INSTANCE_NAME`_ClearBit(`$INSTANCE_NAME`_TEMP_CFG_REGISTER, 7);
+    
+}
+
+/**
+ *  \brief          Disable temperature sensor.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_DisableTempSensor(void)
+{
+    /* Set bit 6 of TEMP_CFG_REG */
+    return `$INSTANCE_NAME`_ClearBit(`$INSTANCE_NAME`_TEMP_CFG_REGISTER, 6);
+}
+
+/**
+ *  \brief          Enable low power mode.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_EnableLowPowerMode(void)
+{
+    /* Set bit 3 of CTRL_REG1 */
+    uint8_t error = `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_CTRL_REG1_REGISTER, 3);  
     if ( error == `$INSTANCE_NAME`_OK)
     {
-        /* Clear bit 7 of the register */
-        temp_reg_value &= ~(1 << 7);
-        error = `$INSTANCE_NAME`_Write(`$INSTANCE_NAME`_CTRL_REG0_REGISTER, temp_reg_value);
-        
-        /* Return error based on check */
-        if ( error == `$INSTANCE_NAME`_OK)
-        {
-            return error;
-        }
-        else
+        `$INSTANCE_NAME`_low_power_enabled = 1;
+    }
+    return error;
+}
+
+/**
+ *  \brief          Disable low power mode.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_DisableLowPowerMode(void)
+{
+    /* Clear bit 3 of CTRL_REG1 */
+    uint8_t error = `$INSTANCE_NAME`_ClearBit(`$INSTANCE_NAME`_CTRL_REG1_REGISTER, 3);
+    if ( error == `$INSTANCE_NAME`_OK)
+    {
+        `$INSTANCE_NAME`_low_power_enabled = 0;
+    }
+    return error;
+}
+
+/**
+ *  \brief          Enable X Axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_EnableXAxis(void)
+{
+    /* Set bit 0 of CTRL_REG1 */
+    return `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_CTRL_REG1_REGISTER, 0);  
+}
+
+/**
+ *  \brief          Disable X Axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_DisableXAxis(void)
+{
+    /* Clear bit 0 of CTRL_REG1 */
+    return `$INSTANCE_NAME`_ClearBit(`$INSTANCE_NAME`_CTRL_REG1_REGISTER, 0); 
+}
+
+/**
+ *  \brief          Enable Y Axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_EnableYAxis(void)
+{
+    /* Set bit 1 of CTRL_REG1 */
+    return `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_CTRL_REG1_REGISTER, 1);  
+}
+
+/**
+ *  \brief          Disable Y Axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_DisableYAxis(void)
+{
+    /* Clear bit 1 of CTRL_REG1 */
+    return `$INSTANCE_NAME`_ClearBit(`$INSTANCE_NAME`_CTRL_REG1_REGISTER, 1); 
+}
+
+/**
+ *  \brief          Enable Z Axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_EnableZAxis(void)
+{
+    /* Set bit 2 of CTRL_REG1 */
+    return `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_CTRL_REG1_REGISTER, 2);  
+}
+
+/**
+ *  \brief          Disable Z Axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_DisableZAxis(void)
+{
+    /* Clear bit 2 of CTRL_REG1 */
+    return `$INSTANCE_NAME`_ClearBit(`$INSTANCE_NAME`_CTRL_REG1_REGISTER, 2); 
+}
+
+/**
+ *  \brief          Set acceleration and ADC output data rate.
+ *  \param[in]      odr: output data rate.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ */
+uint8_t `$INSTANCE_NAME`_SetOutputDataRate(uint8_t odr)
+{
+    if (odr > 9)
+    {
+        return `$INSTANCE_NAME`_CONF_ERR;
+    }
+    uint8_t temp_reg_value;
+   /* Read CTRL_REG1 register */
+    uint8_t error = `$INSTANCE_NAME`_Read(`$INSTANCE_NAME`_CTRL_REG1_REGISTER, &temp_reg_value);
+    if ( error == `$INSTANCE_NAME`_OK)
+    {    
+        /* Clear required bits [7:4] */
+        temp_reg_value &= 0x0F;
+        temp_reg_value |= (odr << 4);
+        error = `$INSTANCE_NAME`_Write(`$INSTANCE_NAME`_CTRL_REG1_REGISTER, temp_reg_value);
+        if ( error != `$INSTANCE_NAME`_OK)
         {
             return `$INSTANCE_NAME`_I2C_ERR;
         }
-        
+        return error;
     }
     return `$INSTANCE_NAME`_DEV_NOT_FOUND;
+        
 }
-
 /***********************************
 *      Axis Overrun Functions      *
 ************************************/
@@ -500,6 +751,7 @@ static uint8_t `$INSTANCE_NAME`_CheckADCNewData(uint8_t ch, uint8_t* new_data)
     return `$INSTANCE_NAME`_DEV_NOT_FOUND;
 }
 
+
 /***********************************
 *           I2C Functions          *
 ************************************/
@@ -569,6 +821,82 @@ static uint8_t `$INSTANCE_NAME`_Write(uint8_t register_address,
         return `$INSTANCE_NAME`_OK;
     }
 
+    return `$INSTANCE_NAME`_DEV_NOT_FOUND;
+}
+
+/**
+ *  \brief          Clear bit in the I2C register.
+ *  \param[in]      register_address: address of the I2C register.
+ *  \param[in]      bit_pos: position of the bit to be cleared.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if \ref bit_pos is out of range
+ */
+static uint8_t `$INSTANCE_NAME`_ClearBit(uint8_t register_address,
+                                        uint8_t bit_pos)
+{
+    if (bit_pos > 7)
+    {
+        return `$INSTANCE_NAME`_CONF_ERR;
+    }
+    /* Read register value */
+    uint8_t temp_reg_value, error;
+    error = `$INSTANCE_NAME`_Read(register_address, &temp_reg_value);
+    if ( error == `$INSTANCE_NAME`_OK)
+    {
+        /* Clear bit of the register */
+        temp_reg_value &= ~(1 << bit_pos);
+        error = `$INSTANCE_NAME`_Write(register_address, temp_reg_value);
+        
+        /* Return error based on check */
+        if ( error == `$INSTANCE_NAME`_OK)
+        {
+            return error;
+        }
+        else
+        {
+            return `$INSTANCE_NAME`_I2C_ERR;
+        }
+        
+    }
+    return `$INSTANCE_NAME`_DEV_NOT_FOUND;
+}    
+
+/**
+ *  \brief          Set bit in the I2C register.
+ *  \param[in]      register_address: address of the I2C register.
+ *  \param[in]      bit_pos: position of the bit to be set.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if \ref bit_pos is out of range
+ */
+static uint8_t `$INSTANCE_NAME`_SetBit(uint8_t register_address,
+                                        uint8_t bit_pos)
+{
+    if (bit_pos > 7)
+    {
+        return `$INSTANCE_NAME`_CONF_ERR;
+    }
+    /* Read register value */
+    uint8_t temp_reg_value, error;
+    error = `$INSTANCE_NAME`_Read(register_address, &temp_reg_value);
+    if ( error == `$INSTANCE_NAME`_OK)
+    {
+        /* Set bit of the register */
+        temp_reg_value |= 1 << bit_pos;
+        error = `$INSTANCE_NAME`_Write(register_address, temp_reg_value);
+        
+        /* Return error based on check */
+        if ( error == `$INSTANCE_NAME`_OK)
+        {
+            return error;
+        }
+        else
+        {
+            return `$INSTANCE_NAME`_I2C_ERR;
+        }
+        
+    }
     return `$INSTANCE_NAME`_DEV_NOT_FOUND;
 }
 /* [] END OF FILE */
