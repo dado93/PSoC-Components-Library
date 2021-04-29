@@ -106,6 +106,14 @@
     uint8_t `$INSTANCE_NAME`_ZAxisHasNewData(uint8_t* new_data);
     uint8_t `$INSTANCE_NAME`_AxisHasNewData(uint8_t* new_data);
     
+    // TODO
+    uint8_t `$INSTANCE_NAME`_XAxisReadRaw(uint16_t* data);
+    uint8_t `$INSTANCE_NAME`_XAxisRead(int16_t* data);
+    uint8_t `$INSTANCE_NAME`_YAxisReadRaw(uint16_t* data);
+    uint8_t `$INSTANCE_NAME`_YAxisRead(int16_t* data);
+    uint8_t `$INSTANCE_NAME`_ZAxisReadRaw(uint16_t* data);
+    uint8_t `$INSTANCE_NAME`_ZAxisRead(int16_t* data);
+    
     /***********************************************
     *               ADC Functions                  *
     ***********************************************/
@@ -119,6 +127,7 @@
     uint8_t `$INSTANCE_NAME`_ADC3HasNewData(uint8_t* new_data);
     uint8_t `$INSTANCE_NAME`_ADCHasNewData(uint8_t* new_data);
     
+    // TODO
     uint8_t `$INSTANCE_NAME`_ADC1ReadRaw(uint16_t* data);
     uint8_t `$INSTANCE_NAME`_ADC1Read(int16_t* data);
     uint8_t `$INSTANCE_NAME`_ADC2ReadRaw(uint16_t* data);

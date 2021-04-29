@@ -95,6 +95,12 @@
 static uint8_t `$INSTANCE_NAME`_Read(uint8_t register_address,
                                         uint8_t* value);
 
+static uint8_t `$INSTANCE_NAME`_ReadRawData(uint8_t register_address,
+                                        uint16_t* value);
+
+static uint8_t `$INSTANCE_NAME`_ReadData(uint8_t register_address,
+                                        uint16_t* value);
+
 static uint8_t `$INSTANCE_NAME`_ReadMulti(uint8_t register_address,
                                             uint8_t register_count,
                                             uint8_t* value);
@@ -117,9 +123,16 @@ static uint8_t `$INSTANCE_NAME`_CheckADCOverrun(uint8_t axis, uint8_t* overrun);
 static uint8_t `$INSTANCE_NAME`_CheckADCNewData(uint8_t axis, uint8_t* new_data);
 
 /***********************************
-*          State Variables         *
+*          Module Variables         *
 ************************************/
-static uint8_t `$INSTANCE_NAME`_low_power_enabled;
+
+static struct {
+    uint8_t     `$INSTANCE_NAME`_Init;   
+    uint8_t     `$INSTANCE_NAME`_LowPowerEnabled; 
+    uint8_t     `$INSTANCE_NAME`_FullScaleRange; 
+} `$INSTANCE_NAME`_Config;
+
+
 /***********************************
 *          Generic Functions       *
 ************************************/
@@ -238,6 +251,12 @@ uint8_t `$INSTANCE_NAME`_Stop(void)
 *     Read Register Functions      *
 ************************************/
 
+/**
+ *  \brief          Read Who Am I register from device.
+ *  \param[out]     Value of the Who Am I register.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ */
 uint8_t `$INSTANCE_NAME`_ReadWhoAmI(uint8_t* value)
 {
     return `$INSTANCE_NAME`_Read(`$INSTANCE_NAME`_WHO_AM_I_REGISTER, value);
@@ -751,6 +770,38 @@ static uint8_t `$INSTANCE_NAME`_CheckADCNewData(uint8_t ch, uint8_t* new_data)
     return `$INSTANCE_NAME`_DEV_NOT_FOUND;
 }
 
+/***********************************
+*        ADC Read Functions        *
+************************************/
+uint8_t `$INSTANCE_NAME`_ADC1ReadRaw(uint16_t* data)
+{
+    return `$INSTANCE_NAME`_ReadRawData(`$INSTANCE_NAME`_OUT_ADC_1_L_REGISTER, data);
+}
+    
+uint8_t `$INSTANCE_NAME`_ADC1Read(int16_t* data)
+{
+    
+}
+
+uint8_t `$INSTANCE_NAME`_ADC2ReadRaw(uint16_t* data)
+{
+    return `$INSTANCE_NAME`_ReadRawData(`$INSTANCE_NAME`_OUT_ADC_2_L_REGISTER, data);
+}
+
+uint8_t `$INSTANCE_NAME`_ADC2Read(int16_t* data)
+{
+    
+}
+
+uint8_t `$INSTANCE_NAME`_ADC3ReadRaw(uint16_t* data)
+{
+    return `$INSTANCE_NAME`_ReadRawData(`$INSTANCE_NAME`_OUT_ADC_3_L_REGISTER, data);
+}
+
+uint8_t `$INSTANCE_NAME`_ADC3Read(int16_t* data)
+{
+    
+}
 
 /***********************************
 *           I2C Functions          *
@@ -803,6 +854,45 @@ static uint8_t `$INSTANCE_NAME`_ReadMulti(uint8_t register_address,
 
     return `$INSTANCE_NAME`_DEV_NOT_FOUND;
 }    
+
+/**
+ *  \brief          Read raw 10-bit data from I2C registers.
+ *  \param[in]      register_address: the starting address for I2C read operation.
+ *  \param[out]     value: the raw 10-bit data read from the device.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ */
+static uint8_t `$INSTANCE_NAME`_ReadRawData(uint8_t register_address,
+                                        uint16_t* value)
+{
+    uint8_t temp_data[2];
+    uint8_t error = `$INSTANCE_NAME`_ReadMulti(register_address, 2, temp_data);
+    if ( error == `$INSTANCE_NAME`_OK )
+    {
+        *value = (((uint16_t)temp_data[1])) << 8 | temp_data[0];
+    }
+    return error;
+}
+
+/*
+ *  \brief          Read data in two's complement format from I2C registers.
+ *  \param[in]      register_address: the starting address for I2C read operation.
+ *  \param[out]     value: the floating point 8/10-bit data read from the device.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ */
+static uint8_t `$INSTANCE_NAME`_ReadData(uint8_t register_address,
+                                        float* value)
+{
+    /* Get raw 10 bits */
+    uint16_t temp_data;
+    uint8_t error = `$INSTANCE_NAME`_ReadRawData(register_address, &temp_data);
+    if ( error == `$INSTANCE_NAME`_OK )
+    {
+        /* Convert in two's complement */
+        
+    }
+}
 
 /**
  *  \brief          Write a register via I2C.
