@@ -106,7 +106,6 @@ uint8_t `$INSTANCE_NAME`_I2C_ReadMultiRegister(uint8_t device_address,
     uint8_t error = `$I2C_Master`_MasterSendStart(device_address,`$I2C_Master`_WRITE_XFER_MODE);
     if (error == `$I2C_Master`_MSTR_NO_ERROR)
     {
-        register_address |= 0x80;   // auto-increment register address
         error = `$I2C_Master`_MasterWriteByte(register_address);
         
         if (error == `$I2C_Master`_MSTR_NO_ERROR)

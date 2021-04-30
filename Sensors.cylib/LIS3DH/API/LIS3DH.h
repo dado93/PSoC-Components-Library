@@ -63,6 +63,11 @@
      */
     #define `$INSTANCE_NAME`_CONF_ERR       3
     
+    #define `$INSTANCE_NAME`_FSR_2g         0
+    #define `$INSTANCE_NAME`_FSR_4g         1
+    #define `$INSTANCE_NAME`_FSR_8g         2
+    #define `$INSTANCE_NAME`_FSR_16g        3
+    
     /***********************************
     *       Generic Functions          *
     ************************************/
@@ -92,6 +97,7 @@
     uint8_t `$INSTANCE_NAME`_EnableZAxis(void);
     uint8_t `$INSTANCE_NAME`_DisableZAxis(void);
     uint8_t `$INSTANCE_NAME`_SetOutputDataRate(uint8_t odr);
+    uint8_t `$INSTANCE_NAME`_SetFullScaleRange(uint8_t fsr);
     
     /***********************************************
     *           Acceleration Functions             *
@@ -106,13 +112,20 @@
     uint8_t `$INSTANCE_NAME`_ZAxisHasNewData(uint8_t* new_data);
     uint8_t `$INSTANCE_NAME`_AxisHasNewData(uint8_t* new_data);
     
-    // TODO
     uint8_t `$INSTANCE_NAME`_XAxisReadRaw(uint16_t* data);
-    uint8_t `$INSTANCE_NAME`_XAxisRead(int16_t* data);
     uint8_t `$INSTANCE_NAME`_YAxisReadRaw(uint16_t* data);
-    uint8_t `$INSTANCE_NAME`_YAxisRead(int16_t* data);
     uint8_t `$INSTANCE_NAME`_ZAxisReadRaw(uint16_t* data);
-    uint8_t `$INSTANCE_NAME`_ZAxisRead(int16_t* data);
+    uint8_t `$INSTANCE_NAME`_AxisReadRaw(uint16_t* x_axis, 
+                                            uint16_t* y_axis,
+                                            uint16_t* z_axis);
+    
+    // TODO
+    uint8_t `$INSTANCE_NAME`_XAxisRead(float* data);
+    uint8_t `$INSTANCE_NAME`_YAxisRead(float* data);
+    uint8_t `$INSTANCE_NAME`_ZAxisRead(float* data);
+    uint8_t `$INSTANCE_NAME`_AxisRead(float* x_axis, 
+                                            float* y_axis,
+                                            float* z_axis);
     
     /***********************************************
     *               ADC Functions                  *
@@ -127,13 +140,14 @@
     uint8_t `$INSTANCE_NAME`_ADC3HasNewData(uint8_t* new_data);
     uint8_t `$INSTANCE_NAME`_ADCHasNewData(uint8_t* new_data);
     
-    // TODO
     uint8_t `$INSTANCE_NAME`_ADC1ReadRaw(uint16_t* data);
-    uint8_t `$INSTANCE_NAME`_ADC1Read(int16_t* data);
     uint8_t `$INSTANCE_NAME`_ADC2ReadRaw(uint16_t* data);
-    uint8_t `$INSTANCE_NAME`_ADC2Read(int16_t* data);
     uint8_t `$INSTANCE_NAME`_ADC3ReadRaw(uint16_t* data);
-    uint8_t `$INSTANCE_NAME`_ADC3Read(int16_t* data);
+    
+    // TODO
+    uint8_t `$INSTANCE_NAME`_ADC1Read(float* data);
+    uint8_t `$INSTANCE_NAME`_ADC2Read(float* data);
+    uint8_t `$INSTANCE_NAME`_ADC3Read(float* data);
     
     
     #ifdef __cpluscplus
