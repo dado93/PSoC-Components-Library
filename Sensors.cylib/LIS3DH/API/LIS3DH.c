@@ -1023,6 +1023,7 @@ static uint8_t `$INSTANCE_NAME`_ReadAccDataAllAxis(float* x_axis,
         uint16_t denominator;
         switch (`$INSTANCE_NAME`_Config.LowPowerEnabled)
         {
+            /* We only have 8 bits of data */
             case 0:
             case 1:
         }
