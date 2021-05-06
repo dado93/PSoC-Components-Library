@@ -1,6 +1,6 @@
 /**
-  *  \file           LIS3DH_I2C.c
-  *  \brief          Source file for LIS3DH I2C interface.
+  *  \file           `$INSTANCE_NAME`_I2C.c
+  *  \brief          Source file for `$INSTANCE_NAME` I2C interface.
   *
   *  \author         Davide Marzorati
   */

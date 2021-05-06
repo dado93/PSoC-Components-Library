@@ -1,10 +1,10 @@
 /**
   *  \file           `$INSTANCE_NAME`.c
-  *  \brief          Source file for LIS3DH interface.
+  *  \brief          Source file for `$INSTANCE_NAME` interface.
   *
   *  \author         Davide Marzorati
   */
- 
+
 /*******************************************************************************
  * Copyright (c) 2021 Marzorati Davide
  *
@@ -105,16 +105,24 @@ static uint8_t `$INSTANCE_NAME`_Write(uint8_t register_address,
 static uint8_t `$INSTANCE_NAME`_ReadRawAccData(uint8_t axis,
                                                 uint16_t* data);
 
+static uint8_t `$INSTANCE_NAME`_ReadRawAccDataAllAxis(uint16_t* x_axis, 
+                                                    uint16_t* y_axis, 
+                                                    uint16_t* z_axis);
+
 static uint8_t `$INSTANCE_NAME`_ReadRawADCData(uint8_t channel,
                                                 uint16_t* data);
 
 static uint8_t `$INSTANCE_NAME`_ReadAccData(uint8_t axis,
                                                 float* data);
 
+static uint8_t `$INSTANCE_NAME`_ReadAccDataAllAxis(float* x_axis,
+                                                        float* y_axis,
+                                                        float* z_axis);
+
 static uint8_t `$INSTANCE_NAME`_ReadADCData(uint8_t channel,
                                                 float* data);
 
-static uint8_t `$INSTANCE_NAME`_ReadADCDataAllAxis(float* ch_1,
+static uint8_t `$INSTANCE_NAME`_ReadADCDataAllChannels(float* ch_1,
                                                         float* ch_2,
                                                         float* ch_3);
 
@@ -140,8 +148,16 @@ static struct {
     uint8_t     Init;   
     uint8_t     LowPowerEnabled; 
     uint8_t     FullScaleRange; 
+    uint8_t     HighResolutionMode;
+    uint8_t     NumberOfShiftBits;
+    uint8_t     ADCNumberOfShiftBits;
+    uint8_t     Sensitivity;
 } `$INSTANCE_NAME`_Config;
 
+static const uint8_t `$INSTANCE_NAME`_Sensitivity[4][3] = { {1,  4,  16},
+                                                    {2,  8,  32},
+                                                    {4, 16,  64},
+                                                    {12,48, 192}};
 
 /***********************************
 *          Generic Functions       *
@@ -232,7 +248,7 @@ uint8_t `$INSTANCE_NAME`_Start(void)
     }
     else
     {
-        error =`$INSTANCE_NAME`_DisableTempSensor();
+        error = `$INSTANCE_NAME`_DisableTempSensor();
     }
     
     /* Check if we need to enable low power mode */
@@ -242,7 +258,7 @@ uint8_t `$INSTANCE_NAME`_Start(void)
     }
     else
     {
-        error =`$INSTANCE_NAME`_DisableLowPowerMode();
+        error = `$INSTANCE_NAME`_DisableLowPowerMode();
     }
     
     /* Set output data rate */
@@ -314,9 +330,14 @@ uint8_t `$INSTANCE_NAME`_ConnectPullUp(void)
  */
 uint8_t `$INSTANCE_NAME`_EnableADC(void)
 {
-    /* Set bit 7 of TEMP_CFG_REG */
-    return `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_TEMP_CFG_REGISTER, 7);
-    
+    /* Enable BDU */
+    uint8_t error = `$INSTANCE_NAME`_EnableBlockDataUpdate();
+    if ( error == `$INSTANCE_NAME`_OK )
+    {
+        /* Set bit 7 of TEMP_CFG_REG */
+        error = `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_TEMP_CFG_REGISTER, 7);
+    }
+    return error;
 }
 
 /**
@@ -336,6 +357,7 @@ uint8_t `$INSTANCE_NAME`_EnableTempSensor(void)
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
  *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \note           Block Data Update is note disabled when disabling ADC.
  */
 uint8_t `$INSTANCE_NAME`_DisableADC(void)
 {
@@ -360,15 +382,20 @@ uint8_t `$INSTANCE_NAME`_DisableTempSensor(void)
  *  \brief          Enable low power mode.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if device is in high resolution mode.
  */
 uint8_t `$INSTANCE_NAME`_EnableLowPowerMode(void)
 {
+    if ( `$INSTANCE_NAME`_Config.HighResolutionMode )
+    {
+        return `$INSTANCE_NAME`_CONF_ERR;
+    }
     /* Set bit 3 of CTRL_REG1 */
     uint8_t error = `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_CTRL_REG1_REGISTER, 3);  
     if ( error == `$INSTANCE_NAME`_OK)
     {
         `$INSTANCE_NAME`_Config.LowPowerEnabled = 1;
+        `$INSTANCE_NAME`_Config.NumberOfShiftBits = 8;
     }
     return error;
 }
@@ -386,6 +413,7 @@ uint8_t `$INSTANCE_NAME`_DisableLowPowerMode(void)
     if ( error == `$INSTANCE_NAME`_OK)
     {
         `$INSTANCE_NAME`_Config.LowPowerEnabled = 0;
+        `$INSTANCE_NAME`_Config.NumberOfShiftBits = 6;
     }
     return error;
 }
@@ -410,11 +438,81 @@ uint8_t `$INSTANCE_NAME`_SetFullScaleRange(uint8_t fsr)
         if ( error == `$INSTANCE_NAME`_OK)
         {
             `$INSTANCE_NAME`_Config.FullScaleRange = fsr;
+            uint8_t sens_index = 1;
+            if( `$INSTANCE_NAME`_Config.LowPowerEnabled )
+            {
+                sens_index = 2;
+            }
+            else if ( `$INSTANCE_NAME`_Config.HighResolutionMode )
+            {
+                sens_index = 0;
+            }
+            `$INSTANCE_NAME`_Config.Sensitivity = `$INSTANCE_NAME`_Sensitivity[`$INSTANCE_NAME`_Config.FullScaleRange][sens_index];
             return error;
         }
     }
     
     return `$INSTANCE_NAME`_DEV_NOT_FOUND;
+}
+
+/**
+ *  \brief          Enable Block Data Update (BDU).
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.        
+ */
+uint8_t `$INSTANCE_NAME`_EnableBlockDataUpdate(void)
+{
+    return `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_CTRL_REG4_REGISTER, 7);
+}
+
+/**
+ *  \brief          Disable Block Data Update (BDU).
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.        
+ */
+uint8_t `$INSTANCE_NAME`_DisableBlockDataUpdate(void)
+{
+    return `$INSTANCE_NAME`_ClearBit(`$INSTANCE_NAME`_CTRL_REG4_REGISTER, 7);
+}
+
+/**
+ *  \brief          Enable High Resolution mode.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.  
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if device is in low power mode.  
+ */
+uint8_t `$INSTANCE_NAME`_EnableHighResolution(void)
+{
+    if ( `$INSTANCE_NAME`_Config.LowPowerEnabled )
+    {
+        return `$INSTANCE_NAME`_CONF_ERR;
+    }
+    uint8_t error = `$INSTANCE_NAME`_SetBit(`$INSTANCE_NAME`_CTRL_REG4_REGISTER, 3);
+    if ( error == `$INSTANCE_NAME`_OK )
+    {
+        `$INSTANCE_NAME`_Config.HighResolutionMode = 1;
+        `$INSTANCE_NAME`_Config.NumberOfShiftBits = 4;
+        `$INSTANCE_NAME`_Config.Sensitivity = `$INSTANCE_NAME`_Sensitivity[`$INSTANCE_NAME`_Config.FullScaleRange][0];
+    }
+    return error;
+}
+
+/**
+ *  \brief          Disable High Resolution mode.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.   
+ */
+uint8_t `$INSTANCE_NAME`_DisableHighResolution(void)
+{
+    uint8_t error = `$INSTANCE_NAME`_ClearBit(`$INSTANCE_NAME`_CTRL_REG4_REGISTER, 3);
+    if ( error == `$INSTANCE_NAME`_OK )
+    {
+        /* Switch back to normal mode configuration */
+        `$INSTANCE_NAME`_Config.HighResolutionMode = 0;
+        `$INSTANCE_NAME`_Config.NumberOfShiftBits = 6;
+        `$INSTANCE_NAME`_Config.Sensitivity = `$INSTANCE_NAME`_Sensitivity[`$INSTANCE_NAME`_Config.FullScaleRange][1];
+    }
+    return error;
 }
 
 /***********************************
@@ -722,6 +820,54 @@ uint8_t `$INSTANCE_NAME`_AxisReadRaw(uint16_t* x_axis,
     return error;
 }
 
+/**
+ *  \brief          Read acceleration data from X axis.
+ *  \param[out]     data: floating point acceleration of X axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ */
+uint8_t `$INSTANCE_NAME`_XAxisRead(float* data)
+{
+    return `$INSTANCE_NAME`_ReadAccData(`$INSTANCE_NAME`_X_AXIS_PARAM, data);
+}
+
+/**
+ *  \brief          Read acceleration data from Y axis.
+ *  \param[out]     data: floating point acceleration of Y axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ */
+uint8_t `$INSTANCE_NAME`_YAxisRead(float* data)
+{
+    return `$INSTANCE_NAME`_ReadAccData(`$INSTANCE_NAME`_Y_AXIS_PARAM, data);
+}
+
+/**
+ *  \brief          Read acceleration data from Z axis.
+ *  \param[out]     data: floating point acceleration on Z axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ */
+uint8_t `$INSTANCE_NAME`_ZAxisRead(float* data)
+{
+    return `$INSTANCE_NAME`_ReadAccData(`$INSTANCE_NAME`_Z_AXIS_PARAM, data);
+}
+
+/**
+ *  \brief          Read acceleration data from all axis.
+ *  \param[out]     x_axis: floating point acceleration on X axis.
+ *  \param[out]     y_axis: floating point acceleration on Y axis.
+ *  \param[out]     z_axis: floating point acceleration on Z axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ */
+uint8_t `$INSTANCE_NAME`_AxisRead(float* x_axis, 
+                                        float* y_axis,
+                                        float* z_axis)
+{
+    return `$INSTANCE_NAME`_ReadAccDataAllAxis(x_axis, y_axis, z_axis);
+}
+
 /***********************************
 *          ADC Functions           *
 ************************************/
@@ -999,7 +1145,59 @@ static uint8_t `$INSTANCE_NAME`_ReadRawADCData(uint8_t channel, uint16_t* data)
     return error;
 }
 
+/**
+ *  \brief          Read raw acceleration data all axis.
+ *  \param[out]     x_axis: the raw data read from the x axis.
+ *  \param[out]     y_axis: the raw data read from the y axis.
+ *  \param[out]     z_axis: the raw data read from the z axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ */
+static uint8_t `$INSTANCE_NAME`_ReadRawAccDataAllAxis(uint16_t* x_axis, 
+                                                        uint16_t* y_axis, 
+                                                        uint16_t* z_axis)
+{
+    /* Read starting from OUT_X_L register */
+    uint8_t temp_data[6];
+    uint8_t error = `$INSTANCE_NAME`_ReadMulti(`$INSTANCE_NAME`_OUT_X_L_REGISTER, 6, temp_data);
+    if ( error == `$INSTANCE_NAME`_OK )
+    {
+        *x_axis = ((uint16_t)temp_data[1] << 8) | temp_data[0];
+        *y_axis = ((uint16_t)temp_data[3] << 8) | temp_data[2];
+        *z_axis = ((uint16_t)temp_data[5] << 8) | temp_data[4];
+    }
+    return error;
+}
 
+/**
+ *  \brief          Read acceleration data from single axis.
+ *  \param[in]      axis: the axis of intereset.
+ *  \param[out]     data: the floating point data read from axis.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if \ref axis value is out of range.
+ */
+static uint8_t `$INSTANCE_NAME`_ReadAccData(uint8_t axis,
+                                                float* data)
+{
+    if ( axis > `$INSTANCE_NAME`_Z_AXIS_PARAM)
+    {
+        return `$INSTANCE_NAME`_CONF_ERR;
+    }
+    /* Get raw bits */
+    int16_t raw_data;
+    uint8_t error = `$INSTANCE_NAME`_ReadRawAccData(axis, (uint16_t*)&raw_data);
+    
+    if ( error == `$INSTANCE_NAME`_OK )
+    {
+        /* Shift with proper number of bits */
+        raw_data = raw_data >> `$INSTANCE_NAME`_Config.NumberOfShiftBits;
+        
+        /* Convert to float */
+        *data = `$INSTANCE_NAME`_Config.Sensitivity * ((float) raw_data);
+    }
+    return error;
+}
 
 /*
  *  \brief          Read acceleration data in float format from all axis.
@@ -1013,41 +1211,25 @@ static uint8_t `$INSTANCE_NAME`_ReadAccDataAllAxis(float* x_axis,
                                                 float* y_axis,
                                                 float* z_axis)
 {
-    /* Get raw 10 bits */
-    uint16_t raw_x_axis, raw_y_axis, raw_z_axis;
-    uint8_t error = `$INSTANCE_NAME`_ReadRawAccDataAllAxis(&raw_x_axis, 
-                                                            &raw_y_axis, 
-                                                            &raw_z_axis);
+    /* Get raw bits with sign*/
+    int16_t raw_x_axis, raw_y_axis, raw_z_axis;
+    uint8_t error = `$INSTANCE_NAME`_ReadRawAccDataAllAxis((uint16_t*)&raw_x_axis, 
+                                                           (uint16_t*)&raw_y_axis, 
+                                                           (uint16_t*)&raw_z_axis);
+
     if ( error == `$INSTANCE_NAME`_OK )
     {
-        uint16_t denominator;
-        switch (`$INSTANCE_NAME`_Config.LowPowerEnabled)
-        {
-            /* We only have 8 bits of data */
-            case 0:
-            case 1:
-        }
+        /* Shift with proper number of bits */
+        raw_x_axis = raw_x_axis >> `$INSTANCE_NAME`_Config.NumberOfShiftBits;
+        raw_y_axis = raw_y_axis >> `$INSTANCE_NAME`_Config.NumberOfShiftBits;
+        raw_z_axis = raw_z_axis >> `$INSTANCE_NAME`_Config.NumberOfShiftBits;
+        
         /* Convert to float */
-        switch(`$INSTANCE_NAME`_Config.FullScaleRange)
-        {
-            case `$INSTANCE_NAME`_FSR_2g:
-                /* 2g FSR */
-            
-                break;
-            case `$INSTANCE_NAME`_FSR_4g:
-                /* 4g FSR */
-            
-                break;
-            case `$INSTANCE_NAME`_FSR_8g:
-                /* 8g FSR */
-            
-                break;
-            case `$INSTANCE_NAME`_FSR_16g:
-                /* 16g FSR */
-            
-                break;
-        }
+        *x_axis = `$INSTANCE_NAME`_Config.Sensitivity * ((float) raw_x_axis);
+        *y_axis = `$INSTANCE_NAME`_Config.Sensitivity * ((float) raw_y_axis);
+        *z_axis = `$INSTANCE_NAME`_Config.Sensitivity * ((float) raw_z_axis);   
     }
+    return error;
 }
 
 /*
@@ -1056,28 +1238,28 @@ static uint8_t `$INSTANCE_NAME`_ReadAccDataAllAxis(float* x_axis,
  *  \param[out]     value: the floating point 8/10-bit data read from the device.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if \ref channel is out of range.
  */
 static uint8_t `$INSTANCE_NAME`_ReadADCData(uint8_t channel,
                                         float* value)
 {
+    if ( channel > `$INSTANCE_NAME`_ADC_CH_3_PARAM)
+    {
+        return `$INSTANCE_NAME`_CONF_ERR;
+    }
     /* Get raw bits */
-    uint16_t temp_data;
-    uint8_t error = `$INSTANCE_NAME`_ReadRawADCData(channel, &temp_data);
+    int16_t raw_data;
+    uint8_t error = `$INSTANCE_NAME`_ReadRawADCData(channel, (uint16_t*)&raw_data);
+    
     if ( error == `$INSTANCE_NAME`_OK )
     {
-        /* Convert in two's complement */
+        /* Shift with proper number of bits (8 in LP, 6 otherwise) */
+        raw_data = raw_data >> `$INSTANCE_NAME`_Config.ADCNumberOfShiftBits;
         
-        
-        switch(`$INSTANCE_NAME`_Config.LowPowerEnabled)
-        {
-            case 0:
-            
-                break;
-            case 1:
-                break;
-                
-        }
+        /* Convert to float */
+        *value = ((float) raw_data);
     }
+    return error;
 }
 
 /**

@@ -1,6 +1,6 @@
 /**
   *  \file           `$INSTANCE_NAME`.h
-  *  \brief          Header file for LIS3DH interface.
+  *  \brief          Header file for `$INSTANCE_NAME` interface.
   *
   *  \author         Davide Marzorati
   */
@@ -98,6 +98,10 @@
     uint8_t `$INSTANCE_NAME`_DisableZAxis(void);
     uint8_t `$INSTANCE_NAME`_SetOutputDataRate(uint8_t odr);
     uint8_t `$INSTANCE_NAME`_SetFullScaleRange(uint8_t fsr);
+    uint8_t `$INSTANCE_NAME`_EnableBlockDataUpdate(void);
+    uint8_t `$INSTANCE_NAME`_DisableBlockDataUpdate(void);
+    uint8_t `$INSTANCE_NAME`_EnableHighResolution(void);
+    uint8_t `$INSTANCE_NAME`_DisableHighResolution(void);
     
     /***********************************************
     *           Acceleration Functions             *
