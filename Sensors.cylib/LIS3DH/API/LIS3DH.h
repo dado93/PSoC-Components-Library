@@ -123,7 +123,6 @@
                                             uint16_t* y_axis,
                                             uint16_t* z_axis);
     
-    // TODO
     uint8_t `$INSTANCE_NAME`_XAxisRead(float* data);
     uint8_t `$INSTANCE_NAME`_YAxisRead(float* data);
     uint8_t `$INSTANCE_NAME`_ZAxisRead(float* data);
@@ -153,6 +152,11 @@
     uint8_t `$INSTANCE_NAME`_ADC2Read(float* data);
     uint8_t `$INSTANCE_NAME`_ADC3Read(float* data);
     uint8_t `$INSTANCE_NAME`_ADCRead(float* ch_1, float* ch_2, float* ch_3);
+    
+    
+    // TODO
+    uint8_t `$INSTANCE_NAME`_EnableSelfTest0(void);
+    uint8_t `$INSTANCE_NAME`_EnableSelfTest1(void);
     
     #ifdef __cpluscplus
         }
