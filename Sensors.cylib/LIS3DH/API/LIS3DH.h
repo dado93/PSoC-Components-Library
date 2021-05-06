@@ -147,12 +147,12 @@
     uint8_t `$INSTANCE_NAME`_ADC1ReadRaw(uint16_t* data);
     uint8_t `$INSTANCE_NAME`_ADC2ReadRaw(uint16_t* data);
     uint8_t `$INSTANCE_NAME`_ADC3ReadRaw(uint16_t* data);
+    uint8_t `$INSTANCE_NAME`_ADCReadRaw(uint16_t* ch_1, uint16_t* ch_2, uint16_t* ch_3);
     
-    // TODO
     uint8_t `$INSTANCE_NAME`_ADC1Read(float* data);
     uint8_t `$INSTANCE_NAME`_ADC2Read(float* data);
     uint8_t `$INSTANCE_NAME`_ADC3Read(float* data);
-    
+    uint8_t `$INSTANCE_NAME`_ADCRead(float* ch_1, float* ch_2, float* ch_3);
     
     #ifdef __cpluscplus
         }

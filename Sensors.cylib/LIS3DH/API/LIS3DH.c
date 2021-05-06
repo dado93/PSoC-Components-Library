@@ -112,6 +112,10 @@ static uint8_t `$INSTANCE_NAME`_ReadRawAccDataAllAxis(uint16_t* x_axis,
 static uint8_t `$INSTANCE_NAME`_ReadRawADCData(uint8_t channel,
                                                 uint16_t* data);
 
+static uint8_t `$INSTANCE_NAME`_ReadRawADCDataAllChannels(uint16_t* ch_1,
+                                                uint16_t* ch_2,
+                                                uint16_t* ch_3);
+
 static uint8_t `$INSTANCE_NAME`_ReadAccData(uint8_t axis,
                                                 float* data);
 
@@ -154,10 +158,11 @@ static struct {
     uint8_t     Sensitivity;
 } `$INSTANCE_NAME`_Config;
 
-static const uint8_t `$INSTANCE_NAME`_Sensitivity[4][3] = { {1,  4,  16},
-                                                    {2,  8,  32},
-                                                    {4, 16,  64},
-                                                    {12,48, 192}};
+static const uint8_t `$INSTANCE_NAME`_Sensitivity[4][3] = { {1,  4,  16},   /* FS Range +/- 2g */
+                                                    {2,  8,  32},           /* FS Range +/- 4g */
+                                                    {4, 16,  64},           /* FS Range +/- 8g */
+                                                    {12,48, 192}};          /* FS Range +/- 16g */
+
 
 /***********************************
 *          Generic Functions       *
@@ -267,6 +272,7 @@ uint8_t `$INSTANCE_NAME`_Start(void)
     /* Set full scale range */
     error = `$INSTANCE_NAME`_SetFullScaleRange(`$acc_fsr`);
     
+    `$INSTANCE_NAME`_Config.ADCNumberOfShiftBits = 6;
     
     if ( error == `$INSTANCE_NAME`_OK )
     {
@@ -327,6 +333,7 @@ uint8_t `$INSTANCE_NAME`_ConnectPullUp(void)
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
  *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \note           Block Data Update is enabled for ADC correct functionality.
  */
 uint8_t `$INSTANCE_NAME`_EnableADC(void)
 {
@@ -418,6 +425,17 @@ uint8_t `$INSTANCE_NAME`_DisableLowPowerMode(void)
     return error;
 }
 
+/**
+ *  \brief          Set accelerometer full scale range.
+ *  \param[in]      fsr: the full scale range to be set. Available options are:
+ *                      \ref `$INSTANCE_NAME`_FSR_2g
+ *                      \ref `$INSTANCE_NAME`_FSR_4g
+ *                      \ref `$INSTANCE_NAME`_FSR_8g
+ *                      \ref `$INSTANCE_NAME`_FSR_16g
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ *  \retval         #`$INSTANCE_NANE`_CONF_ERR if \ref fsr is not a valid option.
+*/
 uint8_t `$INSTANCE_NAME`_SetFullScaleRange(uint8_t fsr)
 {
     if (fsr > `$INSTANCE_NAME`_FSR_16g)
@@ -437,6 +455,7 @@ uint8_t `$INSTANCE_NAME`_SetFullScaleRange(uint8_t fsr)
         error = `$INSTANCE_NAME`_Write(`$INSTANCE_NAME`_CTRL_REG4_REGISTER, temp_reg_data);
         if ( error == `$INSTANCE_NAME`_OK)
         {
+            /* Update current sensitivity level */
             `$INSTANCE_NAME`_Config.FullScaleRange = fsr;
             uint8_t sens_index = 1;
             if( `$INSTANCE_NAME`_Config.LowPowerEnabled )
@@ -1025,7 +1044,7 @@ uint8_t `$INSTANCE_NAME`_ADC1ReadRaw(uint16_t* data)
     
 uint8_t `$INSTANCE_NAME`_ADC1Read(float* data)
 {
-    
+    return `$INSTANCE_NAME`_ReadADCData(`$INSTANCE_NAME`_ADC_CH_1_PARAM, data);
 }
 
 /*
@@ -1041,7 +1060,7 @@ uint8_t `$INSTANCE_NAME`_ADC2ReadRaw(uint16_t* data)
 
 uint8_t `$INSTANCE_NAME`_ADC2Read(float* data)
 {
-    
+    return `$INSTANCE_NAME`_ReadADCData(`$INSTANCE_NAME`_ADC_CH_2_PARAM, data);
 }
 
 /*
@@ -1057,7 +1076,17 @@ uint8_t `$INSTANCE_NAME`_ADC3ReadRaw(uint16_t* data)
 
 uint8_t `$INSTANCE_NAME`_ADC3Read(float* data)
 {
-    
+    return `$INSTANCE_NAME`_ReadADCData(`$INSTANCE_NAME`_ADC_CH_3_PARAM, data);
+}
+
+uint8_t `$INSTANCE_NAME`_ADCReadRaw(uint16_t* ch_1, uint16_t* ch_2, uint16_t* ch_3)
+{
+    return `$INSTANCE_NAME`_ReadRawADCDataAllChannels(ch_1, ch_2, ch_3);
+}
+
+uint8_t `$INSTANCE_NAME`_ADCRead(float* ch_1, float* ch_2, float* ch_3)
+{
+    return `$INSTANCE_NAME`_ReadADCDataAllChannels(ch_1, ch_2, ch_3);
 }
 
 /***********************************
@@ -1170,6 +1199,30 @@ static uint8_t `$INSTANCE_NAME`_ReadRawAccDataAllAxis(uint16_t* x_axis,
 }
 
 /**
+ *  \brief          Read raw ADC data from all channels.
+ *  \param[out]     ch_1: the raw data read from channel 1.
+ *  \param[out]     ch_2: the raw data read from channel 2.
+ *  \param[out]     ch_3: the raw data read from channel 3.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ */
+static uint8_t `$INSTANCE_NAME`_ReadRawADCDataAllChannels(uint16_t* ch_1, 
+                                                        uint16_t* ch_2, 
+                                                        uint16_t* ch_3)
+{
+    /* Read starting from OUT_X_L register */
+    uint8_t temp_data[6];
+    uint8_t error = `$INSTANCE_NAME`_ReadMulti(`$INSTANCE_NAME`_OUT_ADC_1_L_REGISTER, 6, temp_data);
+    if ( error == `$INSTANCE_NAME`_OK )
+    {
+        *ch_1 = ((uint16_t)temp_data[1] << 8) | temp_data[0];
+        *ch_2 = ((uint16_t)temp_data[3] << 8) | temp_data[2];
+        *ch_3 = ((uint16_t)temp_data[5] << 8) | temp_data[4];
+    }
+    return error;
+}
+
+/**
  *  \brief          Read acceleration data from single axis.
  *  \param[in]      axis: the axis of intereset.
  *  \param[out]     data: the floating point data read from axis.
@@ -1258,6 +1311,39 @@ static uint8_t `$INSTANCE_NAME`_ReadADCData(uint8_t channel,
         
         /* Convert to float */
         *value = ((float) raw_data);
+    }
+    return error;
+}
+
+/*
+ *  \brief          Read ADC data in float format from all channels.
+ *  \param[out]     x_axis: x axis acceleration.
+ *  \param[out]     y_axis: y axis acceleration.
+ *  \param[out]     z_axis: z axis acceleration.
+ *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
+ *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
+ */
+static uint8_t `$INSTANCE_NAME`_ReadADCDataAllChannels(float* ch_1,
+                                                float* ch_2,
+                                                float* ch_3)
+{
+    /* Get raw bits with sign*/
+    int16_t raw_ch_1, raw_ch_2, raw_ch_3;
+    uint8_t error = `$INSTANCE_NAME`_ReadRawADCDataAllChannels((uint16_t*)&raw_ch_1, 
+                                                           (uint16_t*)&raw_ch_2, 
+                                                           (uint16_t*)&raw_ch_3);
+
+    if ( error == `$INSTANCE_NAME`_OK )
+    {
+        /* Shift with proper number of bits */
+        raw_ch_1 = raw_ch_1 >> `$INSTANCE_NAME`_Config.ADCNumberOfShiftBits;
+        raw_ch_2 = raw_ch_2 >> `$INSTANCE_NAME`_Config.ADCNumberOfShiftBits;
+        raw_ch_3 = raw_ch_3 >> `$INSTANCE_NAME`_Config.ADCNumberOfShiftBits;
+        
+        /* Convert to float */
+        *ch_1 = (float) raw_ch_1;
+        *ch_2 = (float) raw_ch_2;
+        *ch_3 = (float) raw_ch_3;   
     }
     return error;
 }
