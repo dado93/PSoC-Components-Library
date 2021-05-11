@@ -534,6 +534,23 @@ uint8_t `$INSTANCE_NAME`_DisableHighResolution(void)
     return error;
 }
 
+uint8_t `$INSTANCE_NAME`_EnableSelfTest0(void)
+{
+    
+}
+
+uint8_t `$INSTANCE_NAME`_EnableSelfTest1(void)
+{
+}
+
+uint8_t `$INSTANCE_NAME`_DisableSelfTest0(void)
+{
+    
+}
+
+uint8_t `$INSTANCE_NAME`_DisableSelfTest1(void)
+{
+}
 /***********************************
 *      Acceleration Functions      *
 ************************************/

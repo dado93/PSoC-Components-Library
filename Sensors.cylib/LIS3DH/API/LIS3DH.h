@@ -102,6 +102,9 @@
     uint8_t `$INSTANCE_NAME`_DisableBlockDataUpdate(void);
     uint8_t `$INSTANCE_NAME`_EnableHighResolution(void);
     uint8_t `$INSTANCE_NAME`_DisableHighResolution(void);
+    // TODO
+    uint8_t `$INSTANCE_NAME`_EnableSelfTest0(void);
+    uint8_t `$INSTANCE_NAME`_EnableSelfTest1(void);
     
     /***********************************************
     *           Acceleration Functions             *
@@ -154,9 +157,7 @@
     uint8_t `$INSTANCE_NAME`_ADCRead(float* ch_1, float* ch_2, float* ch_3);
     
     
-    // TODO
-    uint8_t `$INSTANCE_NAME`_EnableSelfTest0(void);
-    uint8_t `$INSTANCE_NAME`_EnableSelfTest1(void);
+    
     
     #ifdef __cpluscplus
         }
