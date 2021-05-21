@@ -4,6 +4,7 @@ This is a PSoC Creator library project containing code to be used to interface a
 ## Sensors
 This is a list of sensors contained in the library:
 - :construction: [ST LIS3DH](https://www.st.com/en/mems-and-sensors/lis3dh.html)
+- :construction: [InvenSense ICM-20948](https://product.tdk.com/en/search/sensor/mortion-inertial/imu/info?part_no=ICM-20948&gclid=EAIaIQobChMIvNTek8zb8AIVjLHtCh2roADtEAAYASAAEgKdl_D_BwE)
 
 This is a list of sensors that will be included in the library in the near future:
 - [Sensirion SHT85](https://www.sensirion.com/en/environmental-sensors/humidity-sensors/sht85-pin-type-humidity-sensor-enabling-easy-replaceability/)
