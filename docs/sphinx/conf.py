@@ -17,6 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
+import breathe
 import subprocess
 project = 'PSoC Sensors Library'
 copyright = '2021, Davide Marzorati'
