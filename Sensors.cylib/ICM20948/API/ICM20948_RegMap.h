@@ -32,7 +32,9 @@
 #ifndef __`$INSTANCE_NAME`_REG_MAP_H__
     #define __`$INSTANCE_NAME`_REG_MAP_H__
     
-    
+    /**
+     *  \brief          WHO AM I Register Address.
+     */
     #define `$INSTANCE_NAME`_WHO_AM_I_REGISTER          0x00
     #define `$INSTANCE_NAME`_USER_CTRL_REGISTER         0x03
     #define `$INSTANCE_NAME`_LP_CONFIG_REGISTER         0x05

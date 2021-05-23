@@ -33,10 +33,13 @@
 #include "`$INSTANCE_NAME`_RegMap.h"
 #include "`$I2C_Master`.h"
 
+/***********************************************************
+*                       API Constants                      *
+***********************************************************/
 #define `$INSTANCE_NAME`_I2C_Address    `$I2C_Address`
 
 /***********************************************************
-*                   I2C Read Functions                     *
+*                   Function Declarations                  *
 ***********************************************************/
 static uint8_t `$INSTANCE_NAME`_I2C_ReadRegister(uint8_t register_address,
                                         uint8_t* data);
@@ -45,19 +48,18 @@ static uint8_t `$INSTANCE_NAME`_I2C_ReadMultiRegister(uint8_t register_address,
                                             uint8_t register_count,
                                             uint8_t* data);
 
-/***********************************************************
-*                   I2C Write Functions                    *
-***********************************************************/
 static uint8_t `$INSTANCE_NAME`_I2C_WriteRegister(uint8_t register_address,
                                     uint8_t data);
 
-
+/***********************************************************
+*                   Function Definitions                   *
+***********************************************************/
 /**
 *   \brief          Read WHO AM I Value from device.
 *
 *   \param[out]     who_am_i: content of the WHO AM I register.
-*   \retval         #`$INSTANCE_NAME`_OK if no error occurred.
-*   \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found. 
+*   \retval         \ref `$INSTANCE_NAME`_OK if no error occurred.
+*   \retval         \ref `$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found. 
 */
 uint8_t `$INSTANCE_NAME`_ReadWhoAmI(uint8_t* who_am_i)
 {
@@ -78,8 +80,8 @@ uint8_t `$INSTANCE_NAME`_ReadWhoAmI(uint8_t* who_am_i)
  *
  *  \param[in]      register_address: the address of the I2C device register.
  *  \param[out]     data: the data read from the device.
- *  \retval         #`$INSTANCE_NAME`_I2C_OK if no error occurred.
- *  \retval         #`$INSTANCE_NAME`_I2C_DEV_NOT_FOUND if device was not found.
+ *  \retval         \ref `$INSTANCE_NAME`_I2C_OK if no error occurred.
+ *  \retval         \ref `$INSTANCE_NAME`_I2C_DEV_NOT_FOUND if device was not found.
  */
 static uint8_t `$INSTANCE_NAME`_I2C_ReadRegister(uint8_t register_address,
                                             uint8_t* data)
@@ -116,8 +118,8 @@ static uint8_t `$INSTANCE_NAME`_I2C_ReadRegister(uint8_t register_address,
  *  \param[in]      register_address: the address of the I2C device register.
  *  \param[in]      register_count: total number of registers to be read.
  *  \param[out]     data: the data read from the device.
- *  \retval         #`$INSTANCE_NAME`_I2C_OK if no error occurred.
- *  \retval         #`$INSTANCE_NAME`_I2C_DEV_NOT_FOUND if device was not found.
+ *  \retval         \ref `$INSTANCE_NAME`_I2C_OK if no error occurred.
+ *  \retval         \ref `$INSTANCE_NAME`_I2C_DEV_NOT_FOUND if device was not found.
  */
 static uint8_t `$INSTANCE_NAME`_I2C_ReadMultiRegister( uint8_t register_address,
                                                 uint8_t register_count,
@@ -162,8 +164,8 @@ static uint8_t `$INSTANCE_NAME`_I2C_ReadMultiRegister( uint8_t register_address,
  *
  *  \param[in]      register_address: the address of the I2C device register.
  *  \param[in]      data: the data to be written.
- *  \retval         #`$INSTANCE_NAME`_I2C_OK if no error occurred.
- *  \retval         #`$INSTANCE_NAME`_I2C_DEV_NOT_FOUND if device was not found.
+ *  \retval         \ref `$INSTANCE_NAME`_I2C_OK if no error occurred.
+ *  \retval         \ref `$INSTANCE_NAME`_I2C_DEV_NOT_FOUND if device was not found.
  */
 static uint8_t `$INSTANCE_NAME`_I2C_WriteRegister(uint8_t register_address,
                                         uint8_t data)
