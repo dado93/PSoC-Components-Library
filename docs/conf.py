@@ -68,5 +68,5 @@ html_static_path = ['_static']
 subprocess.call('make clean', shell=True)
 subprocess.call('cd ../doxygen ; doxygen', shell=True)
 
-breathe_projects = {"PSoC Sensors Library": "../doxygen/build/xml/"}
+breathe_projects = {"PSoC Sensors Library": ".doxygen/build/xml/"}
 breathe_default_project = "PSoC Sensors Library"
