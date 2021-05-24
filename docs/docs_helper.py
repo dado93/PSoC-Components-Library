@@ -35,11 +35,12 @@ def create_temp_docs():
                                 os.makedirs(output_dir)
                             with open(os.path.join(output_dir, api_file), 'w') as f_w:
                                 f_w.write(data)
+    os.chdir(original_cwd)
 
 
 def remove_temp_docs():
     original_cwd = os.getcwd()
     if (os.path.exists('docs')):
         os.chdir('docs')
-    os.chdir(os.path.join('doxygen'))
-    shutil.rmtree('src')
+    shutil.rmtree(os.path.join('doxygen', 'src'))
+    os.chdir(original_cwd)

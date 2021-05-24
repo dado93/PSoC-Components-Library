@@ -27,4 +27,7 @@ Export/
 
 */doxygen/build/
 */doxygen/src/
+*/docs/_build
+__pycache__/
+
 # End of https://www.gitignore.io/api/psoccreator
