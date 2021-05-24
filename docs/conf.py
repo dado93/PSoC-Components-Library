@@ -19,6 +19,7 @@
 
 import breathe
 import subprocess
+import docs_helper
 project = 'PSoC Sensors Library'
 copyright = '2021, Davide Marzorati'
 author = 'Davide Marzorati'
@@ -66,7 +67,10 @@ html_static_path = ['_static']
 # -- Extension configuration -------------------------------------------------
 
 subprocess.call('make clean', shell=True)
+
+docs_helper.create_temp_docs()
 subprocess.call('cd doxygen ; doxygen', shell=True)
+docs_helper.remove_temp_docs()
 
 breathe_projects = {"PSoC Sensors Library": "doxygen/build/xml/"}
 breathe_default_project = "PSoC Sensors Library"

@@ -10,6 +10,7 @@ Welcome to PSoC Sensors Library's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   readme
    api
 
 
