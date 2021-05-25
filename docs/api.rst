@@ -15,3 +15,12 @@ LIS3DH
 
    lis3dh_reg
    lis3dh_api
+
+MAX30101
+========
+
+.. toctree::
+   :maxdepth: 2
+
+   max30101_reg
+   max30101_api
