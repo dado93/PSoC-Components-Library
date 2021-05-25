@@ -23,3 +23,4 @@ MAX30101
    :maxdepth: 2
 
    max30101_api
+   max30101_reg
