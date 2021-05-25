@@ -12,10 +12,10 @@ import shutil
 
 def create_temp_docs():
     original_cwd = os.getcwd()
-    if (os.path.exists(os.path.join('..', 'Sensors.cylib'))):
-        os.chdir(os.path.join('..', 'Sensors.cylib'))
+    if (os.path.exists(os.path.join('..', 'Library.cylib'))):
+        os.chdir(os.path.join('..', 'Library.cylib'))
     else:
-        os.chdir('Sensors.cylib')
+        os.chdir('Library.cylib')
 
     library_wd = os.getcwd()
 

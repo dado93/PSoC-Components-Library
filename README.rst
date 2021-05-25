@@ -7,7 +7,7 @@ PSoC Creator drag-and-drop components.
 .. image:: https://readthedocs.org/projects/psoc-components-library/badge/?version=latest
 
 
-Included Sensors
+Included Components
 ^^^^^^^^^^^^^^^^
 This is a list of sensors contained in the library:
 
@@ -20,10 +20,14 @@ This is a list of sensors that are being planned be included in the library in t
 - `Maxim Integrated DS2438 <https://www.maximintegrated.com/en/products/power/battery-management/DS2438.html?intcid=para>`_
 - `Bosch BME280 <https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/>`_
 - `InvenSense MPU9250 <https://invensense.tdk.com/products/motion-tracking/9-axis/mpu-9250/>`_
-
+- `SSD1306 Display Driver`
+  
 Setup
 ^^^^^^^
 
-1. Clone the repository: `git clone https://github.com/dado93/PSoC-Sensors-Library`
-2. Add the `Sensors` project as a dependency for your project in PSoC Creator. Go to `Project` > `Dependencies` > `Add User Depencency`
-3. Use the provided components
+1. Clone the repository: ::
+   
+    git clone https://github.com/dado93/PSoC-Components-Library
+
+2. Add the `Library` project as a dependency for your project in PSoC Creator. Go to `Project` > `Dependencies` > `Add User Depencency`
+3. Use the provided components in your projects
