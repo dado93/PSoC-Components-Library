@@ -5,8 +5,7 @@ interface a PSoC 5LP MCU to several hardware devices with
 PSoC Creator drag-and-drop components.
 
 .. image:: https://readthedocs.org/projects/psoc-components-library/badge/?version=latest
-:target: https://psoc-components-library.readthedocs.io/en/latest/?badge=latest
-:alt: Documentation Status
+
 
 Included Sensors
 ^^^^^^^^^^^^^^^^
