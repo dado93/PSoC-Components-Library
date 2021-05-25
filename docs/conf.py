@@ -17,9 +17,12 @@
 
 # -- Project information -----------------------------------------------------
 
-import breathe
+import os
+import shutil
 import subprocess
-import docs_helper
+
+import breathe
+
 project = 'PSoC Sensors Library'
 copyright = '2021, Davide Marzorati'
 author = 'Davide Marzorati'
@@ -66,11 +69,47 @@ html_static_path = ['_static']
 
 # -- Extension configuration -------------------------------------------------
 
-subprocess.call('make clean', shell=True)
 
-docs_helper.create_temp_docs()
+def create_temp_docs():
+    original_cwd = os.getcwd()
+    if (os.path.exists(os.path.join('..', 'Library.cylib'))):
+        os.chdir(os.path.join('..', 'Library.cylib'))
+    else:
+        os.chdir('Library.cylib')
+
+    library_wd = os.getcwd()
+
+    for component in os.listdir(library_wd):
+        if (os.path.isdir(component)):
+            api_folder = os.path.join(component, 'API')
+            if (os.path.exists(api_folder) and os.path.isdir(api_folder)):
+                # All files, replace `$INSTANCE_NAME` with component name
+                for api_file in os.listdir(api_folder):
+                    if ((api_file[-1] == 'c') or (api_file[-1] == 'h')):
+                        with open(os.path.join(api_folder, api_file), 'r') as f_r:
+                            data = f_r.read()
+                            data = data.replace("`$INSTANCE_NAME`", component)
+                            output_dir = os.path.join(
+                                '..', 'docs', 'doxygen', 'src', component)
+                            if (not os.path.exists(output_dir)):
+                                os.makedirs(output_dir)
+                            with open(os.path.join(output_dir, api_file), 'w') as f_w:
+                                f_w.write(data)
+    os.chdir(original_cwd)
+
+
+def remove_temp_docs():
+    original_cwd = os.getcwd()
+    if (os.path.exists('docs')):
+        os.chdir('docs')
+    shutil.rmtree(os.path.join('doxygen', 'src'))
+    os.chdir(original_cwd)
+
+
+subprocess.call('make clean', shell=True)
+create_temp_docs()
 subprocess.call('cd doxygen ; doxygen', shell=True)
-docs_helper.remove_temp_docs()
+remove_temp_docs()
 
 breathe_projects = {"PSoC Sensors Library": "doxygen/build/xml/"}
 breathe_default_project = "PSoC Sensors Library"

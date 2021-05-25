@@ -30,5 +30,6 @@ Export/
 */docs/_build
 __pycache__/
 _build/
+*.python-version
 
 # End of https://www.gitignore.io/api/psoccreator

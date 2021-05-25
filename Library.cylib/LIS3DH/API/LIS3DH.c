@@ -310,7 +310,7 @@ uint8_t `$INSTANCE_NAME`_ReadWhoAmI(uint8_t* value)
  *  \brief          Disconnect Pull-Up resistor from SDO/SA0 pin.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_I2C_ERR if error occurred during I2C communication.
+ *  \retval         #`$INSTANCE_NAME`_I2C_ERR if error occurred during I2C communication.
  */
 uint8_t `$INSTANCE_NAME`_DisconnectPullUp(void)
 {
@@ -321,7 +321,7 @@ uint8_t `$INSTANCE_NAME`_DisconnectPullUp(void)
  *  \brief          Connect Pull-Up resistor to SDO/SA0 pin.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_I2C_ERR if error occurred during I2C communication.
+ *  \retval         #`$INSTANCE_NAME`_I2C_ERR if error occurred during I2C communication.
  */
 uint8_t `$INSTANCE_NAME`_ConnectPullUp(void)
 {
@@ -332,7 +332,7 @@ uint8_t `$INSTANCE_NAME`_ConnectPullUp(void)
  *  \brief          Enable ADC.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  *  \note           Block Data Update is enabled for ADC correct functionality.
  */
 uint8_t `$INSTANCE_NAME`_EnableADC(void)
@@ -351,7 +351,7 @@ uint8_t `$INSTANCE_NAME`_EnableADC(void)
  *  \brief          Enable temperature sensor.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  */
 uint8_t `$INSTANCE_NAME`_EnableTempSensor(void)
 {
@@ -363,7 +363,7 @@ uint8_t `$INSTANCE_NAME`_EnableTempSensor(void)
  *  \brief          Disable ADC.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  *  \note           Block Data Update is note disabled when disabling ADC.
  */
 uint8_t `$INSTANCE_NAME`_DisableADC(void)
@@ -377,7 +377,7 @@ uint8_t `$INSTANCE_NAME`_DisableADC(void)
  *  \brief          Disable temperature sensor.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  */
 uint8_t `$INSTANCE_NAME`_DisableTempSensor(void)
 {
@@ -389,7 +389,7 @@ uint8_t `$INSTANCE_NAME`_DisableTempSensor(void)
  *  \brief          Enable low power mode.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if device is in high resolution mode.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if device is in high resolution mode.
  */
 uint8_t `$INSTANCE_NAME`_EnableLowPowerMode(void)
 {
@@ -411,7 +411,7 @@ uint8_t `$INSTANCE_NAME`_EnableLowPowerMode(void)
  *  \brief          Disable low power mode.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  */
 uint8_t `$INSTANCE_NAME`_DisableLowPowerMode(void)
 {
@@ -434,7 +434,7 @@ uint8_t `$INSTANCE_NAME`_DisableLowPowerMode(void)
  *                      \ref `$INSTANCE_NAME`_FSR_16g
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if \ref fsr is not a valid option.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if \ref fsr is not a valid option.
 */
 uint8_t `$INSTANCE_NAME`_SetFullScaleRange(uint8_t fsr)
 {
@@ -559,7 +559,7 @@ uint8_t `$INSTANCE_NAME`_DisableSelfTest1(void)
  *  \brief          Enable X Axis.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  */
 uint8_t `$INSTANCE_NAME`_EnableXAxis(void)
 {
@@ -571,7 +571,7 @@ uint8_t `$INSTANCE_NAME`_EnableXAxis(void)
  *  \brief          Disable X Axis.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  */
 uint8_t `$INSTANCE_NAME`_DisableXAxis(void)
 {
@@ -583,7 +583,7 @@ uint8_t `$INSTANCE_NAME`_DisableXAxis(void)
  *  \brief          Enable Y Axis.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  */
 uint8_t `$INSTANCE_NAME`_EnableYAxis(void)
 {
@@ -595,7 +595,7 @@ uint8_t `$INSTANCE_NAME`_EnableYAxis(void)
  *  \brief          Disable Y Axis.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  */
 uint8_t `$INSTANCE_NAME`_DisableYAxis(void)
 {
@@ -607,7 +607,7 @@ uint8_t `$INSTANCE_NAME`_DisableYAxis(void)
  *  \brief          Enable Z Axis.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  */
 uint8_t `$INSTANCE_NAME`_EnableZAxis(void)
 {
@@ -619,7 +619,7 @@ uint8_t `$INSTANCE_NAME`_EnableZAxis(void)
  *  \brief          Disable Z Axis.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  */
 uint8_t `$INSTANCE_NAME`_DisableZAxis(void)
 {
@@ -632,7 +632,7 @@ uint8_t `$INSTANCE_NAME`_DisableZAxis(void)
  *  \param[in]      odr: output data rate.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if parameter error.
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if parameter error.
  */
 uint8_t `$INSTANCE_NAME`_SetOutputDataRate(uint8_t odr)
 {
@@ -709,7 +709,7 @@ uint8_t `$INSTANCE_NAME`_AxisHasOverrun(uint8_t* overrun)
  *  \param[out]     overrun : 1 if any axis has ovverun, 0 otherwise.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if \ref axis is out of range
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if \ref axis is out of range
  */
 static uint8_t `$INSTANCE_NAME`_CheckAxisOverrun(uint8_t axis, uint8_t* overrun)
 {
@@ -779,7 +779,7 @@ uint8_t `$INSTANCE_NAME`_AxisHasNewData(uint8_t* new_data)
  *  \param[out]     new_data : 1 if any axis has new data, 0 otherwise.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if \ref axis is out of range
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if \ref axis is out of range
  */
 static uint8_t `$INSTANCE_NAME`_CheckAxisNewData(uint8_t axis, uint8_t* new_data)
 {
@@ -958,7 +958,7 @@ uint8_t `$INSTANCE_NAME`_ADCHasOverrun(uint8_t* overrun)
  *  \param[out]     overrun : 1 if any channel has ovverun, 0 otherwise.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if \ref axis is out of range
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if \ref axis is out of range
  */
 static uint8_t `$INSTANCE_NAME`_CheckADCOverrun(uint8_t ch, uint8_t* overrun)
 {
@@ -1028,7 +1028,7 @@ uint8_t `$INSTANCE_NAME`_ADCHasNewData(uint8_t* new_data)
  *  \param[out]     new_data : 1 if any axis has new data, 0 otherwise.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if \ref axis is out of range
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if \ref axis is out of range
  */
 static uint8_t `$INSTANCE_NAME`_CheckADCNewData(uint8_t ch, uint8_t* new_data)
 {
@@ -1391,7 +1391,7 @@ static uint8_t `$INSTANCE_NAME`_Write(uint8_t register_address,
  *  \param[in]      bit_pos: position of the bit to be cleared.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if \ref bit_pos is out of range
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if \ref bit_pos is out of range
  */
 static uint8_t `$INSTANCE_NAME`_ClearBit(uint8_t register_address,
                                         uint8_t bit_pos)
@@ -1429,7 +1429,7 @@ static uint8_t `$INSTANCE_NAME`_ClearBit(uint8_t register_address,
  *  \param[in]      bit_pos: position of the bit to be set.
  *  \retval         #`$INSTANCE_NAME`_OK if no error occurred.
  *  \retval         #`$INSTANCE_NAME`_DEV_NOT_FOUND if device was not found on the bus.
- *  \retval         #`$INSTANCE_NANE`_CONF_ERR if \ref bit_pos is out of range
+ *  \retval         #`$INSTANCE_NAME`_CONF_ERR if \ref bit_pos is out of range
  */
 static uint8_t `$INSTANCE_NAME`_SetBit(uint8_t register_address,
                                         uint8_t bit_pos)
