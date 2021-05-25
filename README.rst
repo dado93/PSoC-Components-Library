@@ -1,7 +1,8 @@
-PSoC Sensors Library
-====================
+PSoC Components Library
+=======================
 This is a PSoC Creator library project containing code to be used to
-interface a PSoC 5LP MCU to several sensors with drag-and-drop components.
+interface a PSoC 5LP MCU to several hardware devices with
+PSoC Creator drag-and-drop components.
 
 Included Sensors
 ^^^^^^^^^^^^^^^^
