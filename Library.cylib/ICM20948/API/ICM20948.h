@@ -54,7 +54,7 @@
     #define `$INSTANCE_NAME`_I2C_ERR        1
     
     /**
-     *  \brief          Device not found on API bus error.
+     *  \brief          Device not found on bus error.
      */
     #define `$INSTANCE_NAME`_DEV_NOT_FOUND  2
     
