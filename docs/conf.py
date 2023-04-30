@@ -20,6 +20,7 @@
 import os
 import shutil
 import subprocess
+import sys
 
 import breathe
 
@@ -108,7 +109,14 @@ def remove_temp_docs():
 
 subprocess.call('make clean', shell=True)
 create_temp_docs()
-subprocess.call('cd doxygen ; doxygen', shell=True)
+if os.name == 'nt':
+    original_cwd = os.getcwd()
+    if (os.path.exists('doxygen')):
+        os.chdir('doxygen')
+    subprocess.call('doxygen.exe', shell=True)
+    os.chdir(original_cwd)
+else:
+    subprocess.call('cd doxygen ; doxygen', shell=True)
 remove_temp_docs()
 
 breathe_projects = {"PSoC Sensors Library": "doxygen/build/xml/"}
