@@ -8,7 +8,7 @@ PSoC Creator drag-and-drop components.
 
 
 Included Components
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 This is a list of sensors contained in the library:
 
 - ⚠️ `ST LIS3DH <https://www.st.com/en/mems-and-sensors/lis3dh.html>`_
@@ -23,7 +23,7 @@ This is a list of sensors that are being planned be included in the library in t
 - `SSD1306 Display Driver`
   
 Setup
-^^^^^^^
+^^^^^^
 
 1. Clone the repository: ::
    
@@ -31,3 +31,15 @@ Setup
 
 2. Add the `Library` project as a dependency for your project in PSoC Creator. Go to `Project` > `Dependencies` > `Add User Depencency`
 3. Use the provided components in your projects
+
+Documentation
+^^^^^^^^^^^^^
+Due to the fact that PSoC Creator require API functions to use `$INSTANCE_NAME`
+in the source code, the `conf.py` file was modified to properly build the documentation 
+of the library.
+
+1. Install Doxygen, breathe, and sphinx
+2. Do not edit the Doxygen file, as it is already configured
+3. ``cd docs``
+4. Run ``make html``
+5. You will find the documentation in the ``docs\_build`` folder
