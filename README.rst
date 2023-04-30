@@ -37,6 +37,7 @@ Documentation
 Due to the fact that PSoC Creator require API functions to use `$INSTANCE_NAME`
 in the source code, the `conf.py` file was modified to properly build the documentation 
 of the library.
+The official documentation is built using ReadTheDocs.
 
 1. Install Doxygen, breathe, and sphinx
 2. Do not edit the Doxygen file, as it is already configured
