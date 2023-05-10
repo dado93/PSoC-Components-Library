@@ -34,13 +34,16 @@ Setup
 
 Documentation
 ^^^^^^^^^^^^^
+The documentation of the project relies on standard Doxygen-style comments in the PSoC Creator projects.
+Doxygen comments are then converted through breathe to be used by Sphinx using autodoc.
+The up-to-date documentation is then automatically uploaded to Read The Docs at this [link](https://psoc-components-library.readthedocs.io/en/latest/index.html).
 Due to the fact that PSoC Creator require API functions to use `$INSTANCE_NAME`
 in the source code, the `conf.py` file was modified to properly build the documentation 
 of the library.
 The official documentation is built using ReadTheDocs.
 
-1. Install Doxygen, breathe, and sphinx
-2. Do not edit the Doxygen file, as it is already configured
+1. Install Doxygen, breathe, and sphinx. If you are on Windows, make sure to add Doxygen.exe to your path, otherwise you will not be able to create the documentation.
+2. Do not edit the Doxygen file, as it is already configured to properly create the required documentation.
 3. ``cd docs``
 4. Run ``make html``
 5. You will find the documentation in the ``docs\_build`` folder

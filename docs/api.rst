@@ -1,5 +1,8 @@
+API
+===
+
 ICM20948
-========
+^^^^^^^^
 
 .. toctree::
    :maxdepth: 2
@@ -8,7 +11,7 @@ ICM20948
    icm20948_api
 
 LIS3DH
-========
+^^^^^^^^
 
 .. toctree::
    :maxdepth: 2
@@ -17,9 +20,10 @@ LIS3DH
    lis3dh_api
 
 MAX30101
-========
+^^^^^^^^
 
 .. toctree::
    :maxdepth: 2
 
+   max30101_reg
    max30101_api
