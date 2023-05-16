@@ -1,4 +1,4 @@
-PSoC Sensors Library
+PSoC Components Library
 =======================
 This is a PSoC Creator library project containing code to be used to
 interface a PSoC 5LP MCU to several hardware devices with
