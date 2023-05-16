@@ -44,6 +44,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.imgmath',
     'sphinx.ext.todo',
+    'sphinx.ext.imgconverter',
     'breathe',
 ]
 

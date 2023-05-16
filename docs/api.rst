@@ -25,5 +25,6 @@ MAX30101
 .. toctree::
    :maxdepth: 2
 
+   max30101_defs
    max30101_reg
    max30101_api
