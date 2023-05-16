@@ -1,7 +1,8 @@
 /**
-*   \file `$INSTANCE_NAME`_Defs.h
+*   \file       `$INSTANCE_NAME`_Defs.h
 *   
-*   \brif Defines for `$INSTANCE_NAME`.
+*   \brief      Defines for `$INSTANCE_NAME`.
+*   \author     Davide Marzorati
 */
 
 #ifndef __`$INSTANCE_NAME`_DEFS_H__
