@@ -27,7 +27,7 @@ Setup
 
 1. Clone the repository: ::
    
-    git clone https://github.com/dado93/PSoC-Sensors-Library
+    git clone https://github.com/dado93/PSoC-Components-Library
 
 2. Add the `Library` project as a dependency for your project in PSoC Creator. Go to `Project` > `Dependencies` > `Add User Depencency`
 3. Use the provided components in your projects
